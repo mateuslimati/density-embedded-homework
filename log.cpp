@@ -17,13 +17,11 @@
  *
  * @param ident String for log identity
  */
-Log::Log(std::string ident)
+Log::Log(std::string ident, int default_priority):
+    ident(ident),
+    default_priority(default_priority)
 {
-    priority = LogInfo;
-    strncpy(this->ident, ident.c_str(), sizeof(this->ident));
-    this->ident[sizeof(this->ident) - 1] = '\0';
-
-    openlog(this->ident, LOG_PID, LOG_DAEMON);
+    openlog(this->ident.c_str(), LOG_PID, LOG_DAEMON);
 }
 
 /**
@@ -35,9 +33,9 @@ int Log::sync(void)
 {
     if (this->buffer.length())
     {
-        syslog(this->priority, "%s", this->buffer.c_str());
+        syslog(this->log_priority, "%s", this->buffer.c_str());
         this->buffer.erase();
-        this->priority = LogInfo; // Return priority_ to default value
+        this->log_priority = this->default_priority; // Return priority_ to default value
     }
     return 0;
 }
@@ -70,6 +68,6 @@ int Log::overflow(int c)
  */
 std::ostream &operator<<(std::ostream &os, const LogPriority &log_priority)
 {
-    static_cast<Log *>(os.rdbuf())->priority = (int)log_priority;
+    static_cast<Log *>(os.rdbuf())->log_priority = (int)log_priority;
     return os;
 }

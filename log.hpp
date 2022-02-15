@@ -22,7 +22,7 @@ std::ostream &operator<<(std::ostream &os, const LogPriority &log_priority);
 class Log : public std::basic_streambuf<char, std::char_traits<char>>
 {
 public:
-    explicit Log(std::string ident);
+    explicit Log(std::string ident, int default_priority = LogInfo);
 
 protected:
     int sync();
@@ -30,9 +30,10 @@ protected:
 
 private:
     std::string buffer;
+    std::string ident;
     int facility;
-    int priority;
-    char ident[50];
+    int default_priority;
+    int log_priority;
 
     friend std::ostream &operator<<(std::ostream &os, const LogPriority &log_priority);
 };
