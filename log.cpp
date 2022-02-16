@@ -19,6 +19,7 @@
  */
 Log::Log(std::string ident, int default_priority):
     ident(ident),
+    log_priority(default_priority),
     default_priority(default_priority)
 {
     openlog(this->ident.c_str(), LOG_PID, LOG_DAEMON);
