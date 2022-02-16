@@ -23,31 +23,29 @@
 
 /**
  * @brief Construct a new Tcp Server:: Tcp Server object
- * 
- * @param port 
+ *
+ * @param port
  */
-TcpServer::TcpServer(std::string port, void (* process_event_cb)(int fd)) : 
-    port(port),
-    process_event_cb(process_event_cb)
+TcpServer::TcpServer(std::string port, void (*process_event_cb)(int fd)) : port(port),
+                                                                           process_event_cb(process_event_cb)
 {
 }
 
 /**
  * @brief Destroy the Tcp Server:: Tcp Server object
- * 
+ *
  */
 TcpServer::~TcpServer()
 {
     std::cout << "Destructor" << std::endl;
     free(this->epoll_events);
     close(this->s_file_descriptor);
-
 }
 
 /**
- * @brief 
- * 
- * @return int 
+ * @brief
+ *
+ * @return int
  */
 int TcpServer::socket_bind()
 {
@@ -68,19 +66,19 @@ int TcpServer::socket_bind()
     for (; socket_address != NULL; socket_address = socket_address->ai_next)
     {
         fd = socket(socket_address->ai_family, socket_address->ai_socktype, socket_address->ai_protocol);
-        if(fd == -1)
+        if (fd == -1)
         {
             continue;
         }
 
         ret = setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-        if(ret == -1)
+        if (ret == -1)
         {
             throw Exception(EXCEPTION_MSG("Socket - Could not set socket options."));
         }
 
         ret = bind(fd, socket_address->ai_addr, socket_address->ai_addrlen);
-        if(ret == 0)
+        if (ret == 0)
         {
             /* We managed to bind successfully! */
             break;
@@ -101,8 +99,8 @@ int TcpServer::socket_bind()
 }
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  */
 void TcpServer::make_non_blocking(int file_descriptor)
 {
@@ -121,8 +119,8 @@ void TcpServer::make_non_blocking(int file_descriptor)
 }
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  */
 void TcpServer::socket_listen()
 {
@@ -135,14 +133,14 @@ void TcpServer::socket_listen()
         throw Exception(EXCEPTION_MSG("Socket - Could not listen."));
     }
     this->e_file_descriptor = epoll_create1(0);
-    if (this->e_file_descriptor  == -1)
+    if (this->e_file_descriptor == -1)
     {
         throw Exception(EXCEPTION_MSG("Socket - Could not created epoll."));
     }
 
     event.data.fd = this->s_file_descriptor;
     event.events = EPOLLIN | EPOLLET;
-    ret = epoll_ctl(this->e_file_descriptor , EPOLL_CTL_ADD, this->s_file_descriptor, &event);
+    ret = epoll_ctl(this->e_file_descriptor, EPOLL_CTL_ADD, this->s_file_descriptor, &event);
     if (ret == -1)
     {
         throw Exception(EXCEPTION_MSG("Socket - Could not manipulate an epoll instance."));
@@ -153,8 +151,8 @@ void TcpServer::socket_listen()
 }
 
 /**
- * @brief 
- * 
+ * @brief
+ *
  */
 void TcpServer::process_events()
 {
@@ -162,33 +160,32 @@ void TcpServer::process_events()
     struct epoll_event event;
 
     n_events = epoll_wait(this->e_file_descriptor, this->epoll_events, TCP_SERVER_MAX_EVENTS, TCP_SERVER_WAIT_TIMEOUT);
-    for(int idx_event = 0; idx_event < n_events; idx_event++)
-	{
-	    if((this->epoll_events[idx_event].events & EPOLLERR) ||
+    for (int idx_event = 0; idx_event < n_events; idx_event++)
+    {
+        if ((this->epoll_events[idx_event].events & EPOLLERR) ||
             (this->epoll_events[idx_event].events & EPOLLHUP) ||
             (!(this->epoll_events[idx_event].events & EPOLLIN)))
         {
             /* An error has occured on this fd, or the socket is not
                 ready for reading (why were we notified then?) */
-	        std::cout << LogErr << "epoll error. Code " <<
-                        this->epoll_events[idx_event].events << std::endl;
-	        close(this->epoll_events[idx_event].data.fd);
-	        continue;
-	    }
+            std::cout << LogErr << "epoll error. Code " << this->epoll_events[idx_event].events << std::endl;
+            close(this->epoll_events[idx_event].data.fd);
+            continue;
+        }
 
-	    else if(this->s_file_descriptor == this->epoll_events[idx_event].data.fd)
-	    {
+        else if (this->s_file_descriptor == this->epoll_events[idx_event].data.fd)
+        {
             /* We have a notification on the listening socket, which
                 means one or more incoming connections. */
-            while(1)
+            while (1)
             {
                 struct sockaddr in_addr;
                 socklen_t in_len;
                 int in_file_descriptor;
-                
+
                 in_len = sizeof(in_addr);
                 in_file_descriptor = accept(this->s_file_descriptor, &in_addr, &in_len);
-                if(in_file_descriptor == -1)
+                if (in_file_descriptor == -1)
                 {
                     if ((errno == EAGAIN) ||
                         (errno == EWOULDBLOCK))
@@ -221,7 +218,7 @@ void TcpServer::process_events()
             continue;
         }
         else
-        {          
+        {
             if (this->process_event_cb == nullptr)
             {
                 std::cout << LogErr << "Process event callback is null " << std::endl;
