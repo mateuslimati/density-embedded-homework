@@ -1,0 +1,10 @@
+[Unit]
+Description=Linux service that maintains a single current count and modifies the count by accepting commands over TCP/IP socket.
+[Service]
+Type=simple
+ExecStart=/usr/sbin/counterService
+Restart=on-failure
+RestartSec=10
+KillMode=process
+[Install]
+WantedBy=multi-user.target
