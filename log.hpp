@@ -1,3 +1,18 @@
+/**
+ * @file log.hpp
+ * @author Mateus Lima (mateuslima.ti@gmail.com)
+ * @brief Log class headers.
+ * @version 0.1
+ * @date 2022-02-15
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
+
+#ifndef __LOG_HPP__
+#define __LOG_HPP__
+
 #include <streambuf>
 #include <syslog.h>
 
@@ -23,7 +38,8 @@ class Log : public std::basic_streambuf<char, std::char_traits<char>>
 {
 public:
     explicit Log(std::string ident, int default_priority = LogInfo);
-
+    virtual ~Log();
+    
 protected:
     int sync();
     int overflow(int c);
@@ -37,3 +53,7 @@ private:
 
     friend std::ostream &operator<<(std::ostream &os, const LogPriority &log_priority);
 };
+
+#endif //__LOG_HPP__
+
+/** @} */

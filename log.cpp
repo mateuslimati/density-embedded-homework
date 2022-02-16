@@ -25,6 +25,15 @@ Log::Log(std::string ident, int default_priority):
 }
 
 /**
+ * @brief Destroy the Log:: Log object
+ * 
+ */
+Log::~Log()
+{
+    closelog();
+}
+
+/**
  * @brief Sync method
  *
  * @return void
