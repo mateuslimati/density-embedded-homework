@@ -42,7 +42,7 @@ int process_message(char *buff, std::shared_ptr<Counter> *counter)
     size_t pos = 0;
     std::string token;
 
-    if (s_buff.find("\r\n") != (s_buff.size() - 2))
+    if (s_buff.find(CTRL_STRING) != (s_buff.size() - 2))
     {
         return PROCESS_UNKNOWN;
     }
@@ -54,11 +54,11 @@ int process_message(char *buff, std::shared_ptr<Counter> *counter)
         token = s_buff.substr(0, pos);
         s_buff.erase(0, pos + delimiter.length());
         founded_delimiter += 1;
-        if (token.compare("INCR") == 0)
+        if (token.compare(INCR_STRING) == 0)
         {
             process_code = PROCESS_INCR;
         }
-        if (token.compare("DECR") == 0)
+        if (token.compare(DECR_STRING) == 0)
         {
             process_code = PROCESS_DECR;
         }
@@ -69,7 +69,7 @@ int process_message(char *buff, std::shared_ptr<Counter> *counter)
     }
     if (founded_delimiter == 0)
     {
-        if (s_buff.compare("OUTPUT") == 0)
+        if (s_buff.compare(OUTPUT_STRING) == 0)
         {
             return PROCESS_OUTPUT;
         }
@@ -116,7 +116,7 @@ void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context)
             switch (process_code)
             {
             case PROCESS_OUTPUT:
-                s_counter = std::to_string((*counter)->get_value()) + "\r\n";
+                s_counter = std::to_string((*counter)->get_value()) + CTRL_STRING;
                 ret = write(fd, s_counter.c_str(), s_counter.size());
                 if (ret == -1)
                 {
@@ -126,7 +126,7 @@ void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context)
             case PROCESS_UNKNOWN:
                 break;
             default:
-                s_counter = std::to_string((*counter)->get_value()) + "\r\n";
+                s_counter = std::to_string((*counter)->get_value()) + CTRL_STRING;
                 for (std::list<int>::iterator it = ac->begin();
                      it != ac->end(); ++it)
                 {

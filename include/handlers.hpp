@@ -31,6 +31,11 @@ enum ProcessCode
     PROCESS_OUTPUT,  // system process is output
 };
 
+#define CTRL_STRING "\r\n"
+#define OUTPUT_STRING "OUTPUT"
+#define INCR_STRING "INCR"
+#define DECR_STRING "DECR"
+
 void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context);
 void signals_handler(int signo, siginfo_t *siginfo, void *context);
 
