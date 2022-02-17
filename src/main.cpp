@@ -10,12 +10,10 @@
  */
 
 #include <iostream>
-#include <unistd.h>
 #include <log.hpp>
 #include <exceptions.hpp>
 #include <tcp_server.hpp>
 #include <counter.hpp>
-#include <memory>
 #include <signals.hpp>
 #include <main.hpp>
 #include <handlers.hpp>
