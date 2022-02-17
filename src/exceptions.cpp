@@ -1,7 +1,7 @@
 /**
  * @file exceptions.cpp
- * @author your name (you@domain.com)
- * @brief
+ * @author Mateus Lima Alves (mateuslima.ti@gmail.com)
+ * @brief File that contents the exceptions methods implementations.
  * @version 0.1
  * @date 2022-02-15
  *
@@ -14,7 +14,7 @@
 /**
  * @brief Construct a new Exception:: Exception object
  *
- * @param description
+ * @param[in] description Exception description
  */
 Exception::Exception(const char *description) : 
     m_description{description}
