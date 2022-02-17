@@ -15,7 +15,7 @@
 /**
  * @brief Construct a new Counter:: Counter object
  *
- * @param value
+ * @param[in] value
  */
 Counter::Counter(unsigned int value) : value(value)
 {
@@ -42,8 +42,8 @@ unsigned int Counter::get_value()
 /**
  * @brief Overload for iterator +=
  * 
- * @param num 
- * @return Counter& 
+ * @param[i] num that whill be add to value attribute
+ * @return Counter& this object
  */
 Counter &Counter::operator+=(const int num)
 {
@@ -60,9 +60,9 @@ Counter &Counter::operator+=(const int num)
 }
 
 /**
- * @brief Overload for iterator -=
+ * @brief[i] Overload for iterator -=
  * 
- * @param num 
+ * @param num that whill be subtraid to value attribute
  * @return Counter& 
  */
 Counter &Counter::operator-=(const int num)
