@@ -9,7 +9,7 @@ Counter service is a Linux service that maintains a single current count and mod
 sudo cp counter-service.service /etc/systemd/system
 ```
 
-* The second step is does a manual reaload on systemd to load the new system service:
+* The second step is to manually reaload on systemd to load the new system service:
 
 ```sh
 sudo systemctl daemon-reload
