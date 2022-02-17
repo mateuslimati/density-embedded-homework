@@ -1,7 +1,7 @@
 /**
  * @file handlers.hpp
  * @author Mateus Lima Alves (mateuslima.ti@gmail.com)
- * @brief
+ * @brief Handler headers.
  * @version 0.1
  * @date 2022-02-17
  *
@@ -35,6 +35,9 @@ enum ProcessCode
 #define OUTPUT_STRING "OUTPUT"
 #define INCR_STRING "INCR"
 #define DECR_STRING "DECR"
+
+bool is_number(const std::string &s);
+int process_message(char *buff, std::shared_ptr<Counter> *counter);
 
 void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context);
 void signals_handler(int signo, siginfo_t *siginfo, void *context);

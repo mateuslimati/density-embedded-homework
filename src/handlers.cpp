@@ -1,7 +1,7 @@
 /**
  * @file handlers.cpp
  * @author Mateus Lima Alves (mateuslima.ti@gmail.com)
- * @brief
+ * @brief Handler methods.
  * @version 0.1
  * @date 2022-02-17
  *
@@ -19,6 +19,13 @@
 
 volatile int run_service = 1;
 
+/**
+ * @brief Funcion that verifing if a string contents a number.
+ *
+ * @param[in] s string that will be verify
+ * @return      true if contents a number
+ * @return      false if not contents
+ */
 bool is_number(const std::string &s)
 {
     return !s.empty() && std::find_if(s.begin(),
@@ -27,15 +34,15 @@ bool is_number(const std::string &s)
 }
 
 /**
- * @brief
+ * @brief Function that processing a buffer that can contents a message.
  *
- * @param buff
- * @param counter
- * @return int
+ * @param[in] buffer    char array that will be verify
+ * @param[out] counter  smart pointer that manager the shared counter
+ * @return int          process status (PROCESS_UNKNOWN, PROCESS_INCR, PROCESS_DECR, PROCESS_OUTPUT)
  */
-int process_message(char *buff, std::shared_ptr<Counter> *counter)
+int process_message(char *buffer, std::shared_ptr<Counter> *counter)
 {
-    std::string s_buff(buff);
+    std::string s_buff(buffer);
     std::string delimiter = std::string(" ");
     int founded_delimiter = 0;
     int process_code = PROCESS_UNKNOWN;
@@ -94,10 +101,11 @@ int process_message(char *buff, std::shared_ptr<Counter> *counter)
 }
 
 /**
- * @brief
+ * @brief Callback used to processing a request from a file descriptor
  *
- * @param fd
- * @param ac
+ * @param[in] fd        file descriptor that requested something
+ * @param[in] ac        active connections
+ * @param[out] context  void point that contents the shared counter
  */
 void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context)
 {
@@ -161,11 +169,11 @@ void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context)
 }
 
 /**
- * @brief
+ * @brief Callback used to processing signals handler. See sigaction man.
  *
- * @param signo
- * @param siginfo
- * @param context
+ * @param[in] signo
+ * @param[in] siginfo
+ * @param[in] context
  */
 void signals_handler(int signo, siginfo_t *siginfo, void *context)
 {
