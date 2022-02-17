@@ -234,9 +234,6 @@ void TcpServer::process_events()
             {
                 this->process_event_cb(this->epoll_events[idx_event].data.fd, this->active_connections, this->context);
             }
-
-            close(this->epoll_events[idx_event].data.fd);
-            this->active_connections->remove(this->epoll_events[idx_event].data.fd);
         }
     }
 }

@@ -19,6 +19,18 @@
 
 extern volatile int run_service;
 
+/**
+ * @brief Process code enumeration.
+ *
+ */
+enum ProcessCode
+{
+    PROCESS_UNKNOWN, // system process is unknown
+    PROCESS_INCR,    // system process is incrementation
+    PROCESS_DECR,    // system process is decrementation
+    PROCESS_OUTPUT,  // system process is output
+};
+
 void process_handler(int fd, std::unique_ptr<std::list<int>> &ac, void *context);
 void signals_handler(int signo, siginfo_t *siginfo, void *context);
 
