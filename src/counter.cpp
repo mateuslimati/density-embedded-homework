@@ -40,31 +40,41 @@ unsigned int Counter::get_value()
 }
 
 /**
- * @brief Overload for iterator ++
- *
- * @return Counter
+ * @brief Overload for iterator +=
+ * 
+ * @param num 
+ * @return Counter& 
  */
-Counter Counter::operator++(int)
+Counter &Counter::operator+=(const int num)
 {
     Counter result = *this;
-    if (this->value < __UINT32_MAX__)
+    if ((this->value + num) < __UINT32_MAX__)
     {
-        this->value++;
+        this->value += num;
+    }
+    else
+    {
+        this->value = __UINT32_MAX__;
     }
     return *this;
 }
 
 /**
- * @brief Overload for iterator --
- *
- * @return Counter
+ * @brief Overload for iterator -=
+ * 
+ * @param num 
+ * @return Counter& 
  */
-Counter Counter::operator--(int)
+Counter &Counter::operator-=(const int num)
 {
     Counter result = *this;
-    if (this->value > 0)
+    if ((this->value - num) > 0)
     {
-        this->value--;
+        this->value -= num;
+    }
+    else
+    {
+        this->value = 0;
     }
     return *this;
 }

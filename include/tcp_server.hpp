@@ -25,7 +25,9 @@
 class TcpServer
 {
 public:
-    explicit TcpServer(std::string port, void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac) = nullptr);
+    explicit TcpServer(std::string port,
+                       void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac, void *context) = nullptr,
+                       void *context = nullptr);
     virtual ~TcpServer();
     int socket_bind();
     void socket_listen();
@@ -40,7 +42,8 @@ private:
     int s_file_descriptor;
     int e_file_descriptor;
     struct epoll_event *epoll_events;
-    void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac);
+    void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac, void *context);
+    void *context;
 };
 
 #endif //__TCP_SERVER_HPP__

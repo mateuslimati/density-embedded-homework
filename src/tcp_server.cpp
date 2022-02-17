@@ -26,8 +26,11 @@
  *
  * @param port
  */
-TcpServer::TcpServer(std::string port, void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac)) : port(port),
-                                                                                                                process_event_cb(process_event_cb)
+TcpServer::TcpServer(std::string port,
+                     void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac, void *context),
+                     void *context) : port(port),
+                                      process_event_cb(process_event_cb),
+                                      context(context)
 {
     this->active_connections = std::unique_ptr<std::list<int>>(new std::list<int>({}));
 }
@@ -223,13 +226,13 @@ void TcpServer::process_events()
         }
         else if (this->epoll_events[idx_event].events & EPOLLIN)
         {
-            if (this->process_event_cb == nullptr)
+            if (this->process_event_cb == nullptr || this->context == nullptr)
             {
-                std::cout << LogErr << "Process event callback is null " << std::endl;
+                std::cout << LogErr << "Process event callback or context are nullptr " << std::endl;
             }
             else
             {
-                this->process_event_cb(this->epoll_events[idx_event].data.fd, this->active_connections);
+                this->process_event_cb(this->epoll_events[idx_event].data.fd, this->active_connections, this->context);
             }
 
             close(this->epoll_events[idx_event].data.fd);

@@ -19,8 +19,8 @@ public:
     virtual ~Counter();
 
     unsigned int get_value();
-    Counter operator++(int);
-    Counter operator--(int);
+    Counter &operator+=(const int num);
+    Counter &operator-=(const int num);
 
 private:
     unsigned int value;
