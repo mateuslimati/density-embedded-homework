@@ -26,9 +26,10 @@
  *
  * @param port
  */
-TcpServer::TcpServer(std::string port, void (*process_event_cb)(int fd)) : port(port),
-                                                                           process_event_cb(process_event_cb)
+TcpServer::TcpServer(std::string port, void (*process_event_cb)(int fd, std::unique_ptr<std::list<int>> &ac)) : port(port),
+                                                                                                                process_event_cb(process_event_cb)
 {
+    this->active_connections = std::unique_ptr<std::list<int>>(new std::list<int>({}));
 }
 
 /**
@@ -37,8 +38,9 @@ TcpServer::TcpServer(std::string port, void (*process_event_cb)(int fd)) : port(
  */
 TcpServer::~TcpServer()
 {
-    std::cout << "Destructor" << std::endl;
+    std::cout << "Clossing all connections..." << std::endl;
     free(this->epoll_events);
+    close(this->e_file_descriptor);
     close(this->s_file_descriptor);
 }
 
@@ -170,6 +172,7 @@ void TcpServer::process_events()
                 ready for reading (why were we notified then?) */
             std::cout << LogErr << "epoll error. Code " << this->epoll_events[idx_event].events << std::endl;
             close(this->epoll_events[idx_event].data.fd);
+            this->active_connections->remove(this->epoll_events[idx_event].data.fd);
             continue;
         }
 
@@ -214,10 +217,11 @@ void TcpServer::process_events()
                 {
                     std::cout << LogErr << "epoll error " << std::endl;
                 }
+                this->active_connections->push_back(in_file_descriptor);
             }
             continue;
         }
-        else
+        else if (this->epoll_events[idx_event].events & EPOLLIN)
         {
             if (this->process_event_cb == nullptr)
             {
@@ -225,10 +229,11 @@ void TcpServer::process_events()
             }
             else
             {
-                this->process_event_cb(this->epoll_events[idx_event].data.fd);
+                this->process_event_cb(this->epoll_events[idx_event].data.fd, this->active_connections);
             }
 
             close(this->epoll_events[idx_event].data.fd);
+            this->active_connections->remove(this->epoll_events[idx_event].data.fd);
         }
     }
 }
