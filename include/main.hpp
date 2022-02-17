@@ -1,7 +1,7 @@
 /**
  * @file main.hpp
  * @author Mateus Lima (mateuslima.ti@gmail.com)
- * @brief 
+ * @brief Service main macros
  * @version 0.1
  * @date 2022-02-17
  * 

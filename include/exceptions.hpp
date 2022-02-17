@@ -1,7 +1,7 @@
 /**
  * @file exceptions.hpp
  * @author Mateus Lima Alves (mateuslima.ti@gmail.com)
- * @brief 
+ * @brief File that contents the exception class declaration.
  * @version 0.1
  * @date 2022-02-15
  * 
