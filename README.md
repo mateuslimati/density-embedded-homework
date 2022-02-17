@@ -28,7 +28,3 @@ sudo systemctl start counter-service
 ```
 
 Counter service restart after any failure, and its errors alerts are redirect correctly to journal via syslog.
-
-## Assignment
-
-Your task is to implement a Linux service that maintains a single current count and modifies the count by accepting commands over TCP/IP socket.
